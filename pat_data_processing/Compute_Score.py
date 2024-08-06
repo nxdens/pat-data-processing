@@ -357,9 +357,6 @@ class PatJsonParser:
 
                 # combine with ticks
                 combined = np.column_stack((ticks, avg_distances))
-                directory_name = os.path.dirname(self.this_file)
-                directory_name = os.path.join(directory_name, "npy files")
-                os.makedirs(directory_name, exist_ok=True)
 
                 self.store_data.player_avg_distance[level] = combined
 
@@ -473,10 +470,6 @@ class PatJsonParser:
 
                     except:
                         plt.axvline(x=coin, color="r", linestyle="--", linewidth=0.75)
-
-                directory_name = os.path.dirname(self.this_file)
-                directory_name = os.path.join(directory_name, "coin npy files")
-                os.makedirs(directory_name, exist_ok=True)
 
                 plt.title(f"Graph for Level {level}")
                 plt.xlabel("Tick")
