@@ -2,76 +2,12 @@ import os
 import re
 import argparse
 import logging
-from pat_data_processing.PAT_Data_Structure import PAT_Data_Structure
+from pat_data_processing.PAT_Data_Structure import PatDataStructure
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 
-
-class Utils:
-    @staticmethod
-    def group_files(files):
-        sorted_files = sorted(files, key=Utils.extract_num)
-        grouped_files = {}
-        current_group = [sorted_files[0]]
-
-        for i in range(1, len(sorted_files)):
-            current_file_num = Utils.extract_num(sorted_files[i])
-            last_file_num = Utils.extract_num(current_group[-1])
-            if current_file_num - last_file_num == 1:
-                current_group.append(sorted_files[i])
-            else:
-                grouped_files[last_file_num] = current_group
-                current_group = [sorted_files[i]]
-
-        if current_group:
-            grouped_files[last_file_num] = current_group
-
-        return grouped_files
-
-    @staticmethod
-    def parse_args():
-        parser = argparse.ArgumentParser(
-            description="Analyze .npy files to find and plot jump magnitudes."
-        )
-        parser.add_argument(
-            "--dry-run",
-            "-d",
-            action="store_true",
-            help="Run without making any changes.",
-        )
-        parser.add_argument(
-            "--all-files", "-a", action="store_true", help="Analyze all .npy files."
-        )
-        parser.add_argument(
-            "--logging-level",
-            "-l",
-            default="INFO",
-            help="Set the logging level. Default: INFO",
-        )
-        return parser.parse_args()
-
-    @staticmethod
-    def configure_logging(logging_level, filename):
-        numeric_level = getattr(logging, logging_level.upper(), None)
-        if not isinstance(numeric_level, int):
-            raise ValueError(f"Invalid log level: {logging_level}")
-
-        logging.basicConfig(
-            filename=filename,
-            filemode="a",
-            level=numeric_level,
-            format="%(asctime)s %(levelname)s: %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        )
-
-    @staticmethod
-    def extract_num(file_string):
-        filename = os.path.basename(file_string)
-        match = re.search(r"\d+", filename)
-        if match:
-            return int(match.group(0))
-        return 0
-
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 BLOCKTYPES = [
     "coin: neutral -> positive (neutral)",
@@ -88,6 +24,20 @@ BLOCKTYPES = [
     "speed: neutral -> positive (post-block)",
     "End of game questions",
 ]
+COINTYPES = [
+    "player coins",
+    "e1 coins",
+    "e2 coins",
+    "e3 coins",
+]
+
+SHORT_BLOCKTYPES = [
+    "coin positive",
+    "coin negative",
+    "speed positive",
+    "speed negative",
+]
+
 COINBLOCKS = [
     "coin: neutral -> positive (neutral)",
     "coin: neutral -> positive (post-manipulation)",
@@ -131,7 +81,75 @@ STATSTYPES = [
 ]
 
 
-class PAT_INFO:
+def load_data(
+    compiled_csv="../question_answers_round_3_with_coins.csv",
+    questionaire_path="../data/CGHP Study - Questionnaires_July 22, 2024_08.16.csv",
+    pat_data_path="../data/PAT",
+):
+    pat_coin_data = pd.read_csv(compiled_csv)
+    questionaire_data = pd.read_csv(questionaire_path)
+    game_data_root = pat_data_path
+
+    questionaire_data = questionaire_data.loc[
+        :, questionaire_data.columns.str.startswith("Q")
+    ]
+    question_descriptions = questionaire_data.iloc[0]
+    questionaire_data = questionaire_data.drop(1)
+    questionaire_data = questionaire_data[questionaire_data["Q53"].str.contains("PAT")]
+
+    null_counts = pd.DataFrame(questionaire_data.isnull().sum().transpose())
+    null_counts = null_counts.transpose()
+    null_counts.to_csv("CGHP null_counts.csv")
+    patInfoList = []
+    for pat_id in (pbar := tqdm(questionaire_data["Q53"].unique())):
+        # TODO: Check for inefficient memory usage here
+        pbar.set_description(f"Loading {pat_id}")
+        patInfoList.append(
+            PatInfo(pat_id, questionaire_data, pat_coin_data, game_data_root)
+        )
+
+    return (
+        patInfoList,
+        null_counts,
+        questionaire_data,
+        pat_coin_data,
+        question_descriptions,
+    )
+
+
+def configure_logging(logging_level, filename):
+    numeric_level = getattr(logging, logging_level.upper(), None)
+    if not isinstance(numeric_level, int):
+        raise ValueError(f"Invalid log level: {logging_level}")
+    filehandler = logging.FileHandler(
+        os.path.join(PROJECT_ROOT, "logs", filename), mode="a"
+    )
+    logging.basicConfig(
+        level=numeric_level,
+        format="%(asctime)s %(levelname)s: %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+        handlers=[filehandler, logging.StreamHandler()],
+    )
+
+
+def replace_with_parentheses_value(s):
+    # TODO: check if unused and delete
+    match = re.search(r"\((.*?)\)", s)
+    if match:
+        value = match.group(1)
+        s = s.replace(match.group(0), value)
+        return s, value
+    return s, None
+
+
+def dict_append_or_create_list(dict, key, value):
+    if key in dict:
+        dict[key].append(value)
+    else:
+        dict[key] = [value]
+
+
+class PatInfo:
     def __init__(self, pat_id, questionaire_data, pat_coin_data, pat_game_root):
         self.pat_id = pat_id
 
@@ -148,7 +166,7 @@ class PAT_INFO:
         self.neutrals = []
         self.hasPAT = True
         self.filteredLevels = None
-
+        self.logger = logging.getLogger("processing")
         self.get_pat_data()
         self.process_struct_data()
         self.aggregate_question_responses()
@@ -157,6 +175,9 @@ class PAT_INFO:
         self.neutrals = []
         self.get_neutrals()
         self.pat_data_struct
+        self.logger.log(3, f"{self.pat_id}")
+        self.logger.log(3, f"{self.pat_data.columns}")
+        self.logger.log(3, f"{self.pat_data["Question"].unique()}")
 
     def extract_number(self, s):
         match = re.search(r"PAT_?(\d+)", s)
@@ -172,19 +193,21 @@ class PAT_INFO:
         integer_id = int(self.extract_number(self.pat_id))
         self.pat_data = self.pat_coin_data[self.pat_coin_data.PAT_ID == integer_id]
         self.pat_data.reset_index(drop=True, inplace=True)
-        self.pat_data_struct = PAT_Data_Structure("./output")
+        self.pat_data_struct = PatDataStructure("./output")
         pat_data_path = os.path.join(
             self.pat_game_root, "PAT" + str(integer_id).zfill(3)
         )
 
         if os.path.isdir(pat_data_path):
             pat_data_path = os.path.join(
-                pat_data_path, os.listdir(pat_data_path)[0], "all_data"
+                pat_data_path, os.listdir(pat_data_path)[-1], "all_data"
             )
 
+            self.logger.log(2, f"Loading data from {pat_data_path}")
             self.pat_data_struct.load_data(pat_data_path)
         else:
             self.hasPAT = False
+            self.logger.warning(f"No PAT data found for {self.pat_id}")
 
     def process_struct_data(self):
         if self.pat_data_struct is not None:
@@ -193,6 +216,8 @@ class PAT_INFO:
             ].index
             # coin_idx = self.pat_data[self.pat_data["Question"] == "player coins"].index
             level_stats = self.compute_gmm_features()
+            if len(level_stats) == 0:
+                self.logger.warning(f"No level stats found for {self.pat_id}")
             for idx, stats in zip(coin_idx, level_stats):
                 row_object_copy = self.pat_data.loc[idx].copy()
                 stack = np.vstack([row_object_copy.values] * 9)
@@ -234,6 +259,9 @@ class PAT_INFO:
         # print(filtered_indices)
         # print(self.pat_data_struct.player_level_score)
         level_stats = []
+        if len(filtered_indices) == 0:
+            self.logger.warning(f"No filtered indices found for {self.pat_id}")
+            self.logger.warning(f"{self.pat_data_struct.player_level_score}")
         for level in filtered_indices:
             score, levelTicks, levelCoins = self.compute_real_score(level)
             gmmStats = self.compute_gmm_stats(score, levelTicks)

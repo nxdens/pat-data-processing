@@ -1,18 +1,27 @@
 import numpy as np
 import os
+import logging
 
 
-class PAT_Data_Structure:
-    def __init__(self, file_path, dry_run=False, *args, **kwargs) -> None:
-        self.file_path = file_path # file path should be a PAT_ID directory
+class PatDataStructure:
+    def __init__(
+        self, file_path=None, dry_run=False, save_dir=None, *args, **kwargs
+    ) -> None:
+        self.file_path = file_path  # file path should be a PAT_ID directory
         self.dry_run = dry_run
+        self.logger = logging.getLogger("processing")
         # folder inside self.file_path to store the data
-        self.data_folder_path = os.path.join(self.file_path, "all_data")
-        os.makedirs(self.data_folder_path, exist_ok=True)
+        if file_path is not None:
+            self.data_folder_path = os.path.join(self.file_path, "all_data")
+            os.makedirs(self.data_folder_path, exist_ok=True)
+
+        self.save_dir = save_dir
+        if self.save_dir is not None:
+            os.makedirs(self.save_dir, exist_ok=True)
 
         self.TOTAL_LEVELS = 36
 
-        # temp variables 
+        # temp variables
         self.current_level = 0
         self.player_coins = 0
         self.e1_coins = 0
@@ -29,7 +38,7 @@ class PAT_Data_Structure:
         self.coin_picked_up = False
 
         # data that will be stored in the npz file
-        
+
         self.computed_data = np.empty((self.TOTAL_LEVELS), dtype=object)
         self.player_locs = np.empty((self.TOTAL_LEVELS), dtype=object)
         self.e1_locs = np.empty((self.TOTAL_LEVELS), dtype=object)
@@ -100,13 +109,19 @@ class PAT_Data_Structure:
 
         return level_to_folder
 
-    def save_level_data(self, level):
+    def save_level_data(self, level, path=None):
         groupings = self.group_levels()
 
         if self.computed_data[level] is not None:
             folder_name = groupings[level]
+
+            if path is not None:
+                data_dirname = path
+            else:
+                data_dirname = self.data_folder_path
+            self.logger.info(f"Saving data to {data_dirname}")
             if folder_name:
-                level_directory = os.path.join(self.data_folder_path, folder_name)
+                level_directory = os.path.join(data_dirname, folder_name)
                 os.makedirs(level_directory, exist_ok=True)
                 npz_file_path = os.path.join(level_directory, f"level_{level}_data.npz")
 
@@ -129,11 +144,11 @@ class PAT_Data_Structure:
                 all_ticks=self.all_ticks[level],
             )
 
-    def save_data(self):
+    def save_data(self, path: str = None):
         if self.dry_run:
             return
         for level in range(self.TOTAL_LEVELS):
-            self.save_level_data(level)
+            self.save_level_data(level, path=path)
 
     def load_data(self, root_folder: str):
         """loads data from the root_folder.
@@ -144,9 +159,13 @@ class PAT_Data_Structure:
         """
         if not os.path.exists(root_folder):
             root_folder = os.path.join(self.file_path)
+
+        self.logger.log(0, f"Loading data from {root_folder}")
+
         for folder_name in os.listdir(root_folder):
             folder_path = os.path.join(root_folder, folder_name)
             if os.path.isdir(folder_path):
+
                 for file in os.listdir(folder_path):
                     if file.endswith(".npz"):
                         level = int(file.split("_")[1])

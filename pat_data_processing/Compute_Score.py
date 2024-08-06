@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import logging
-from pat_data_processing.PAT_Data_Structure import PAT_Data_Structure
+from pat_data_processing.PAT_Data_Structure import PatDataStructure
 from tqdm import tqdm
 
 ACTORS = ["player", "e1", "e2", "e3"]
@@ -19,7 +19,7 @@ DET_UNI_COV = np.linalg.det(UNI_COV)
 INV_UNI_COV = np.linalg.inv(UNI_COV)
 
 
-class PAT_JSON_parser:
+class PatJsonParser:
     def __init__(self, file_path, dry_run=False, *args, **kwargs):
         with open(file_path) as json_file:
             self.data = json.load(json_file)
@@ -28,7 +28,9 @@ class PAT_JSON_parser:
         self.logger.info("Initializing PAT_JSON_parser")
         self.this_file = file_path
 
-        self.store_data = PAT_Data_Structure(file_path=os.path.dirname(self.this_file), dry_run=dry_run)
+        self.store_data = PatDataStructure(
+            file_path=os.path.dirname(self.this_file), dry_run=dry_run
+        )
 
         self.window_length = [1000, 1004]
 
@@ -42,9 +44,7 @@ class PAT_JSON_parser:
     def run(self):
         self.starting_coins = 30
 
-        for level_key, level_value in tqdm(
-            self.data.items(), desc="Parsing Level Data"
-        ):
+        for level_key, level_value in self.data.items():
             if "level" in level_key:
                 extract_level_num = level_key.split(" ")
                 self.level_index = int(extract_level_num[1])
@@ -323,10 +323,7 @@ class PAT_JSON_parser:
         )
 
     def calc_euc_dist(self):
-        for level in tqdm(
-            range(len(self.store_data.player_locs)),
-            desc="Calculating Distance",
-        ):
+        for level in range(len(self.store_data.player_locs)):
             if self.store_data.player_locs[level] is not None:
                 ticks = self.store_data.all_ticks[level]
                 player_positions = self.store_data.player_locs[level][:]
