@@ -25,7 +25,7 @@ class DataWrangler:
 
         self.compiled_csv = os.path.join(self.data_path, "temp_PAT_variables.csv")
         self.questionaire_path = os.path.join(
-            self.data_path, "CGHP Study - Questionnaires_July 22, 2024_08.16.csv"
+            self.data_path, "CGHP Study - Questionnaires_July 22, 2024_08.15.csv"
         )
         self.pat_data_path = os.path.join(self.data_path, "PAT")
 
@@ -44,6 +44,11 @@ class DataWrangler:
         if not os.path.exists(self.pat_data_path):
             self.logger.error(f"PAT data not found at {self.pat_data_path}")
             raise FileNotFoundError(f"PAT data not found at {self.pat_data_path}")
+        
+        if not os.path.exists(os.path.join(PROJECT_ROOT, "data", "questionaire_scores.csv")):
+            self.logger.error(f"Questionaire scores not found at {os.path.join(PROJECT_ROOT, 'data', 'questionaire_scores.csv')}")
+            raise FileNotFoundError(f"Questionaire scores not found at {os.path.join(PROJECT_ROOT, 'data', 'questionaire_scores.csv')}")
+        
         self.logger.info("Loading data")
         (
             self.data_list,
@@ -102,7 +107,10 @@ class DataWrangler:
             self.logger.log(0, f"{k} {len(df_val_dict[k])}")
 
         df = pd.DataFrame(df_val_dict, columns=df_val_dict.keys())
-
+        questionaire_scores = pd.read_csv(os.path.join(PROJECT_ROOT, "data", "questionaire_scores.csv"))
+        df = pd.merge(df, questionaire_scores, on="Q53", how = "inner")
+        df["pat_id"] = df["pat_id"].apply(lambda x: re.sub(r"\D", "", x))
+        self.logger.log(10, df["pat_id"])
         self.PAT_df = df
 
     def wrangle_diffs(self):
@@ -133,7 +141,7 @@ class DataWrangler:
                 )
 
                 difs[new_col + " change"] = self.PAT_df[c].values
-            elif re.match(r"^Q\d+", c):
+            else:
                 difs[c] = self.PAT_df[c].values
 
         diffedDF = pd.DataFrame(difs)
@@ -170,7 +178,7 @@ class DataWrangler:
 
                     counts.append(self.PAT_df[match].values)
 
-        counts=np.array(counts).T
+        counts = np.array(counts).T
         self.logger.log(0, counts.shape)
         totals = []
         for i in range(4):

@@ -80,6 +80,22 @@ STATSTYPES = [
     "gmm area under the curve",
 ]
 
+__cols = list(
+    pd.read_csv(
+        os.path.join(PROJECT_ROOT, "data", "questionnaire_column_descriptions.csv")
+    )
+    .iloc[:, 0]
+    .values
+)
+DEMOGRAPHIC_COLS = __cols[18:54]
+SWBS_COLS = __cols[54:69]
+RIC_COLS = __cols[69:83]
+EDS_COLS = __cols[83:95]
+CSE_COLS = __cols[95:111]
+SWLS_COLS = __cols[111:116]
+MSPSS_COLS = __cols[116:128]
+CHRONIC_STRAINS_COLS = __cols[128:]
+
 
 def load_data(
     compiled_csv="../question_answers_round_3_with_coins.csv",

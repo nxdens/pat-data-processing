@@ -15,6 +15,7 @@ from pat_data_processing.Utils import PROJECT_ROOT
 import pat_data_processing.Compute_Score as Compute_Score
 import pat_data_processing.Compile_Answers as Compile_Answers
 from pat_data_processing.Wrangle_Data import DataWrangler
+import pat_data_processing.Compile_Questionnaires as Compile_Questionnaires
 import argparse
 import logging
 from datetime import datetime
@@ -59,6 +60,13 @@ def main():  # pragma: no cover
         action="store_true",
         help="Enable wrangling previous stages. Must be run with previous stages or data must already exist.",
     )
+    parser.add_argument(
+        "--questionaire",
+        "-q",
+        action="store_true",
+        help="Enable questionaire data processing",
+    )
+    
     parser.add_argument("--all", "-a", action="store_true", help="Enable all steps")
     parser.add_argument("--debug", "-d", action="store_true", help="Enable debug mode")
 
@@ -71,7 +79,9 @@ def main():  # pragma: no cover
     parse_json = cmd_args.json
     compile_data = cmd_args.compile
     wrangle_data = cmd_args.wrangle
+    compile_questionaire = cmd_args.questionaire
     all_steps = cmd_args.all
+    
     if debug:
         logger.setLevel(logging.DEBUG)
         logger.debug("Debug mode enabled")
@@ -103,12 +113,21 @@ def main():  # pragma: no cover
         )
         logger.info("Done compiling answers")
 
+    if compile_questionaire or all_steps:
+        logger.info("Starting to compile questionaire data")
+        Compile_Questionnaires.main(data_path)
+        logger.info("Done compiling questionaire data")
+
     # wrangle data
     if wrangle_data or all_steps:
         logger.info("Starting to wrangle data")
         data_wrangler = DataWrangler(data_path=data_path, dry_run=cmd_args.dry_run)
         data_wrangler.run_wrangling()
         logger.info("Done wrangling data")
+        
+    
+        
+            
     # other stuff
     # DataList, null_counts, Questionaire_data, pat_coin_data, Question_descriptions = (
     #     Utils.load_data()
