@@ -27,3 +27,26 @@ There are currently 3 stages to this pipeline.
   3. Combines the data from the previous two stages into a single csv file. In addition, the difference and ratios between the neutral and manipulation blocks are calculated alongside the accuracy of each players self assessed performance.
 
 
+## results
+V1 and V2 have significantly different absolute mood scores (all) but mostly no significant changes in mood
+  speed disadvantage hapiness and confidence different in v2 (higher rating in v2)
+very different performance in the speed much the perception is similar so the accuracy is higher in v2
+
+The game is "more fair" but players rated it as less fair
+
+ran IAT processing script now comparing D1 scores to PAT variables for v1 and v2
+  no correlation with mood or changes in coins collected after manipulation
+  or 'How much would you like to keep playing this game?', 'How well are you playing this game right now?'
+  or how fair, how enjoyable, how likely would you recommend this game to a friend
+  no correlation with accuracy in v1 but weak correlation in v2 (-.451 pearson r sample size 36 needed for significance)
+  
+tried creating a composite score like the IAT 
+  advantage - disavantage average (absolute and minus neutral)
+  combined score of happiness had r (.49)
+
+iat questionaires
+first 20 of v1 did not have questionaires
+demographic shifts
+
+coin positive - coin negative avg with speed diffs
+

@@ -44,11 +44,17 @@ class DataWrangler:
         if not os.path.exists(self.pat_data_path):
             self.logger.error(f"PAT data not found at {self.pat_data_path}")
             raise FileNotFoundError(f"PAT data not found at {self.pat_data_path}")
-        
-        if not os.path.exists(os.path.join(PROJECT_ROOT, "data", "questionaire_scores.csv")):
-            self.logger.error(f"Questionaire scores not found at {os.path.join(PROJECT_ROOT, 'data', 'questionaire_scores.csv')}")
-            raise FileNotFoundError(f"Questionaire scores not found at {os.path.join(PROJECT_ROOT, 'data', 'questionaire_scores.csv')}")
-        
+
+        if not os.path.exists(
+            os.path.join(PROJECT_ROOT, "data", "questionaire_scores.csv")
+        ):
+            self.logger.error(
+                f"Questionaire scores not found at {os.path.join(PROJECT_ROOT, 'data', 'questionaire_scores.csv')}"
+            )
+            raise FileNotFoundError(
+                f"Questionaire scores not found at {os.path.join(PROJECT_ROOT, 'data', 'questionaire_scores.csv')}"
+            )
+
         self.logger.info("Loading data")
         (
             self.data_list,
@@ -107,8 +113,10 @@ class DataWrangler:
             self.logger.log(0, f"{k} {len(df_val_dict[k])}")
 
         df = pd.DataFrame(df_val_dict, columns=df_val_dict.keys())
-        questionaire_scores = pd.read_csv(os.path.join(PROJECT_ROOT, "data", "questionaire_scores.csv"))
-        df = pd.merge(df, questionaire_scores, on="Q53", how = "inner")
+        questionaire_scores = pd.read_csv(
+            os.path.join(PROJECT_ROOT, "data", "questionaire_scores.csv")
+        )
+        df = pd.merge(df, questionaire_scores, on="Q53", how="inner")
         df["pat_id"] = df["pat_id"].apply(lambda x: re.sub(r"\D", "", x))
         self.logger.log(10, df["pat_id"])
         self.PAT_df = df
@@ -164,7 +172,6 @@ class DataWrangler:
         # each row use code below to get get counts and check max of every 4? values
         for block in BLOCKTYPES:
             split_block = block.split(" ")
-
             # Find columns that contain all elements of split_block
             matching_columns = [
                 col
@@ -172,14 +179,14 @@ class DataWrangler:
                 if col.startswith(split_block[0])
                 and all([elem in col for elem in split_block[1:]])
             ]
-
+            
+            
             for match in matching_columns:
                 if any([elem in match for elem in COINTYPES]):
-
                     counts.append(self.PAT_df[match].values)
-
+                    self.logger.log(10, block)
         counts = np.array(counts).T
-        self.logger.log(0, counts.shape)
+        self.logger.log(10, counts.shape)
         totals = []
         for i in range(4):
             neutral = counts[:, i::8]
@@ -192,13 +199,13 @@ class DataWrangler:
         maxes = totals.argmax(axis=0)
         maxes = maxes == 0
         maxes = maxes.astype(int)
-
+        maxes[:, [2, 3]] = maxes[:, [3, 2]]# swap to make sure the order is correct for short blocktypes
         player_bool_cols = [
             " ".join([block, "player most boolean"]) for block in SHORT_BLOCKTYPES
         ]
-        self.logger.log(0, maxes.shape)
-        self.logger.log(0, player_bool_cols)
-        self.logger.log(0, maxes)
+        self.logger.log(10, maxes.shape)
+        self.logger.log(10, player_bool_cols)
+        self.logger.log(10, maxes)
         max_df = pd.DataFrame(maxes, columns=player_bool_cols)
 
         self.PAT_acc_df = pd.concat([self.PAT_diffed_df, max_df], axis=1)

@@ -66,7 +66,7 @@ def main():  # pragma: no cover
         action="store_true",
         help="Enable questionaire data processing",
     )
-    
+
     parser.add_argument("--all", "-a", action="store_true", help="Enable all steps")
     parser.add_argument("--debug", "-d", action="store_true", help="Enable debug mode")
 
@@ -81,7 +81,7 @@ def main():  # pragma: no cover
     wrangle_data = cmd_args.wrangle
     compile_questionaire = cmd_args.questionaire
     all_steps = cmd_args.all
-    
+
     if debug:
         logger.setLevel(logging.DEBUG)
         logger.debug("Debug mode enabled")
@@ -124,10 +124,7 @@ def main():  # pragma: no cover
         data_wrangler = DataWrangler(data_path=data_path, dry_run=cmd_args.dry_run)
         data_wrangler.run_wrangling()
         logger.info("Done wrangling data")
-        
-    
-        
-            
+
     # other stuff
     # DataList, null_counts, Questionaire_data, pat_coin_data, Question_descriptions = (
     #     Utils.load_data()
