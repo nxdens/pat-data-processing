@@ -88,12 +88,12 @@ class DataWrangler:
                         dat = self.data_list[i].pat_dict_data[key][key2]
                         newkey = key + " " + key2
 
-                        if type(dat[0]) != int:
+                        if type(dat[0]) is not int:
                             vals = dat[0]["Score"].values
                             if len(vals) >= 1:
                                 if (
-                                    type(vals[0]) == np.float64
-                                    or type(vals[0]) == float
+                                    type(vals[0]) is np.float64
+                                    or type(vals[0]) is float
                                     or vals[0].isnumeric()
                                 ):
                                     vals = vals.astype(float)
@@ -179,33 +179,49 @@ class DataWrangler:
                 if col.startswith(split_block[0])
                 and all([elem in col for elem in split_block[1:]])
             ]
-            
-            
             for match in matching_columns:
                 if any([elem in match for elem in COINTYPES]):
                     counts.append(self.PAT_df[match].values)
                     self.logger.log(10, block)
+                    self.logger.log(10, match)
+        
         counts = np.array(counts).T
         self.logger.log(10, counts.shape)
         totals = []
         for i in range(4):
             neutral = counts[:, i::8]
-            postmanip = counts[:, i + 4 :: 8]
-            total = neutral + postmanip
-            self.logger.log(0, total.shape)
+            postmanip = counts[:, i + 4::8]
+            total = neutral + postmanip*2
+            self.logger.log(10, f"total shape: {total.shape}")
             totals.append(total)
 
-        totals = np.array(totals)
+        totals = np.array(totals)  # shape is (4 actors, n_participants, 4 blocktypes)
+        self.logger.log(10, f"totals shape: {totals.shape}")
         maxes = totals.argmax(axis=0)
         maxes = maxes == 0
         maxes = maxes.astype(int)
-        maxes[:, [2, 3]] = maxes[:, [3, 2]]# swap to make sure the order is correct for short blocktypes
+        maxes[:, [2, 3]] = maxes[
+            :, [3, 2]
+        ]  # swap to make sure the order is correct for short blocktypes
         player_bool_cols = [
             " ".join([block, "player most boolean"]) for block in SHORT_BLOCKTYPES
         ]
-        self.logger.log(10, maxes.shape)
-        self.logger.log(10, player_bool_cols)
+        
+        overall_max = totals.sum(axis=2).T
+        self.logger.log(10, f"overall max sums: {overall_max}")
+        overall_max = overall_max.argmax(axis=1) == 0
+        overall_max = overall_max.reshape(-1, 1)
+        
+        # should be (n_participants, 1)
+        self.logger.log(10, f"overall max shape: {overall_max.shape}")
+        self.logger.log(10, overall_max)
+        player_bool_cols.append("Overall player most boolean")
+        maxes = np.hstack([maxes, overall_max])
+           
+        self.logger.log(10, f"maxes shape: {maxes.shape}")
+        self.logger.log(10, f"boolean cols: {player_bool_cols}")
         self.logger.log(10, maxes)
+        
         max_df = pd.DataFrame(maxes, columns=player_bool_cols)
 
         self.PAT_acc_df = pd.concat([self.PAT_diffed_df, max_df], axis=1)
@@ -219,7 +235,24 @@ class DataWrangler:
             correct = self.PAT_acc_df[bool] == if_you
             block_correct = block_question.replace("change", "correct")
             self.PAT_acc_df[block_correct] = correct
-
+        
+        overall_question = "End of game questions Please rank the players from who got the MOST coins to who got the LEAST (You, P2, P3, P4)"
+        most_responses = self.PAT_diffed_df[overall_question]
+        
+        def most_responses_correct_apply(response):
+            if pd.isna(response) or response is None:
+                return None
+            self.logger.log(10, response)
+            lower_most_response = response.lower()
+            if_you = re.match(r"^(you|me)", lower_most_response) is not None
+            self.logger.log(10, if_you)
+            return if_you
+        
+        most_responses.map(most_responses_correct_apply)
+        correct = self.PAT_acc_df["Overall player most boolean"] == if_you
+        overall_correct = overall_question + " correct"
+        self.PAT_acc_df[overall_correct] = correct
+    
     def save_all(self):
         if not self.dry_run:
             date = datetime.datetime.now().strftime("%Y-%m-%d")
