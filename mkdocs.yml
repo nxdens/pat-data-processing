@@ -1,2 +1,6 @@
 site_name: pat_data_processing
 theme: readthedocs
+
+nav:
+  - Home: index.md
+  - PAT Data Structure: pat_data_structure.md

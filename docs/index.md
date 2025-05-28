@@ -1,17 +1,13 @@
-# Welcome to MkDocs
+# PAT - GPN Lab
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Code for analyzing data from game that studies privilege, bias, and decisionmaking. 
 
-## Commands
+---
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+## Contents
 
-## Project layout
+* [PAT Data Structure](pat_data_structure.md) - data structure in which PAT game data is stored.
+* `Usage` 
+* `Placeholder1`
+* `Placeholder2`
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
