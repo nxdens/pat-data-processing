@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Compile_Questionnaires.py - pat_data_processing</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Compile_Questionnaires.py";
+        var mkdocs_page_input_path = "compile_questionaires.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> pat_data_processing
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../pat_data_structure/">PAT Data Structure</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">pat_data_processing</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Compile_Questionnaires.py</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="compile_questionnairespy"><code>Compile_Questionnaires.py</code></h1>
+<p>Processes self-reported questionnaire data collected in CSV format</p>
+<hr />
+<h3 id="compile_edsdf-drop_colstrue"><code>compile_EDS(df, drop_cols=True)</code></h3>
+<p>Calculates Everyday Discrimination Scale scores from the passed in DataFrame.</p>
+<p>Returns a DataFrame with EDS scores. Drops raw item columns if <code>drop_cols=True</code>.</p>
+<hr />
+<h3 id="compile_swbsdf-subscalestrue-drop_colstrue"><code>compile_SWBS(df, subscales=True, drop_cols=True)</code></h3>
+<p>Computes Social Well-Being Scale total and subscale scores.</p>
+<p>Computes five subscale scores if <code>subscales=True</code>: <code>WB_Integ</code>, <code>WB_Acce</code>, <code>WB_Contri</code>, <code>WB_Actua</code>, <code>WB_Coher</code></p>
+<hr />
+<h3 id="compile_ricdf-subscalestrue-drop_colstrue"><code>compile_RiC(df, subscales=True, drop_cols=True)</code></h3>
+<p>Processes Race in Context data:</p>
+<p>Calculates frequency and quality of interactions across racial contexts and adds specific metrics for leisure, work, and online contexts if <code>subscales=True</code>.</p>
+<hr />
+<h3 id="compile_csedf-subscalestrue-drop_colstrue"><code>compile_CSE(df, subscales=True, drop_cols=True)</code></h3>
+<p>Calculates Collective Self-Esteem metrics such as total score <code>CSEsum</code> Computes four subscales if <code>subscales=True</code>:  <code>CSEmember</code>, <code>CSEprivate</code>, <code>CSEpublic</code>, <code>CSEidentity</code></p>
+<hr />
+<h3 id="compile_swlsdf-drop_colstrue"><code>compile_SWLS(df, drop_cols=True)</code></h3>
+<p>Calculates Satisfaction With Life Scale total score by summing all five SWLS items.</p>
+<hr />
+<h3 id="compile_mspssdf-subscalestrue-drop_colstrue"><code>compile_MSPSS(df, subscales=True, drop_cols=True)</code></h3>
+<p>Calculates Multidimensional Scale of Perceived Social Support.</p>
+<p>Returns <code>MSPSS_total</code> as the mean across all items. Calculates three subscale means if <code>subscales=True</code>: <code>MSPSS_SigOther</code>, <code>MSPSS_Family</code>, <code>MSPSS_Friend</code></p>
+<hr />
+<h3 id="compile_chronic_strainsdf-drop_colstrue"><code>compile_Chronic_Strains(df, drop_cols=True)</code></h3>
+<p>Calculates the total score from the chronic strains scale as the sum of all relevant items.</p>
+<hr />
+<h3 id="maindata_path"><code>main(data_path)</code></h3>
+<p>Loads the raw questionnaire CSV, calls all compilation functions, merges all score DataFrames on articipant ID, writes the merged DataFrame to <code>data/questionaire_scores.csv</code>.</p>
+<hr />
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

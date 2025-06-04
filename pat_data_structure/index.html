@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>PAT Data Structure - pat_data_processing</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "PAT Data Structure";
+        var mkdocs_page_input_path = "pat_data_structure.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> pat_data_processing
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">PAT Data Structure</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#__init__self-file_pathnone-dry_runfalse-save_dirnone">__init__(self, file_path=None, dry_run=False, save_dir=None)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#init_level_stuctureself-level-int">init_level_stucture(self, level: int)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#convert_to_np_arrayself-level-int">convert_to_np_array(self, level: int)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#group_levelsself-dict">group_levels(self) -&gt; dict</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#save_level_dataself-level-int-pathnone">save_level_data(self, level: int, path=None)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#save_dataself-path-str-none">save_data(self, path: str = None)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#explain-file-struct">* explain file struct</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#load_dataself-root_folder-str">load_data(self, root_folder: str)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#add_dataself-target_var-list-level-int-input_data">add_data(self, target_var: list, level: int, input_data)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#reset_varsself">reset_vars(self)</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">pat_data_processing</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">PAT Data Structure</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="patdatastructure-class"><code>PatDataStructure</code> Class</h1>
+<p>The <code>PatDataStructure</code> class is used to track inidivual participant game data across all 24 levels.</p>
+<hr />
+<h3 id="__init__self-file_pathnone-dry_runfalse-save_dirnone"><code>__init__(self, file_path=None, dry_run=False, save_dir=None)</code></h3>
+<p>Initializes a <code>PatDataStructure</code> instance with respective parameters. The <code>file_path</code> parameter indicates where the raw data is. Set <code>dry_run</code> to true for tracing information. <code>save_dir</code> is currently not used in the code base. </p>
+<p>PatDataStucture stores information for each tick (a specified unit of time) of the game. This information includes the location of the player and each of the three AI agents, the average distance from the player to the uncollected coins on board, the number of coins the player has collected, the number of keys the player has collected. As the processing of the data is happening, the data structure also stores information related to where the coins are located and the ticks at which the player / one of the agents has collected a coin. The data is stored level by level.</p>
+<hr />
+<h3 id="init_level_stuctureself-level-int"><code>init_level_stucture(self, level: int)</code></h3>
+<p>Initializes an empty data structure for the passed in game level.</p>
+<hr />
+<h3 id="convert_to_np_arrayself-level-int"><code>convert_to_np_array(self, level: int)</code></h3>
+<p>Converts passed in game level data into corresponding NumPy arrays, which leads to more efficient storage / computation. </p>
+<hr />
+<h3 id="group_levelsself-dict"><code>group_levels(self) -&gt; dict</code></h3>
+<p>Groups levels into separate folders which correspond to a block. This method searches for a break in the contiguity of the levels as this break indicates the next block. Within the game, levels 1-2 are part of the first block, levels 4–7 are part of the second block, levels 10–11 are part of the third block, levels 13–16 are part of the fourth block, levels 19–20 are part of the fifth block, levels 22–25 are part of the sixth block, levels 28–29 are part of the seventh block, and levels 31–34 are part of the eighth block. There are no levels 3, 8–9, 12, 17–18, 21, 26–27, or 30, and the breakage there signifies the end of the grouping and the lead on to the next group. The blocks that contain solely two levels are the neutral blocks. </p>
+<p>This structure is mirrored in the naming of the folders, where each folder is labeled using the pattern levels_<start><em>to</em><end>. For example, levels_1_to_2, levels_4_to_7, and so on.</p>
+<ul>
+<li>what is it looking for</li>
+</ul>
+<hr />
+<h3 id="save_level_dataself-level-int-pathnone"><code>save_level_data(self, level: int, path=None)</code></h3>
+<p>Saves level-specific data to an <code>.npz</code> file within the corresponding folder.</p>
+<hr />
+<h3 id="save_dataself-path-str-none"><code>save_data(self, path: str = None)</code></h3>
+<p>Saves all levels' data by calling <code>save_level_data()</code> for each level. There are four main folders, each labeled with the specific condition. Within </p>
+<h2 id="explain-file-struct">* explain file struct</h2>
+<h3 id="load_dataself-root_folder-str"><code>load_data(self, root_folder: str)</code></h3>
+<p>Loads all <code>.npz</code> files from the files saved by <code>save_data</code>, populating each field.</p>
+<hr />
+<h3 id="add_dataself-target_var-list-level-int-input_data"><code>add_data(self, target_var: list, level: int, input_data)</code></h3>
+<p>Appends the data to respective level’s passed in field. <code>target_var</code> is the specific field we're trying to add the data to, <code>level</code> is the index at which to store this data, and <code>input_data</code> is what's going to be added in. </p>
+<ul>
+<li>explain parameter</li>
+</ul>
+<hr />
+<h3 id="reset_varsself"><code>reset_vars(self)</code></h3>
+<p>Resets temporary game variables to 0.</p>
+<hr />
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
