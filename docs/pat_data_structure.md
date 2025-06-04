@@ -30,8 +30,6 @@ Groups levels into separate folders which correspond to a block. This method sea
 
 This structure is mirrored in the naming of the folders, where each folder is labeled using the pattern levels_<start>_to_<end>. For example, levels_1_to_2, levels_4_to_7, and so on.
 
-* what is it looking for
-
 ---
 
 ### `save_level_data(self, level: int, path=None)`
@@ -44,7 +42,6 @@ Saves level-specific data to an `.npz` file within the corresponding folder.
 
 Saves all levels' data by calling `save_level_data()` for each level. There are four main folders, each labeled with the specific condition. Within 
 
-* explain file struct
 ---
 
 ### `load_data(self, root_folder: str)`
@@ -57,8 +54,6 @@ Loads all `.npz` files from the files saved by `save_data`, populating each fiel
 ### `add_data(self, target_var: list, level: int, input_data)`
 
 Appends the data to respective level’s passed in field. `target_var` is the specific field we're trying to add the data to, `level` is the index at which to store this data, and `input_data` is what's going to be added in. 
-
-* explain parameter
 
 ---
 
