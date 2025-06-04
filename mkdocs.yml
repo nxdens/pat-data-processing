@@ -1,2 +1,13 @@
 site_name: pat_data_processing
 theme: readthedocs
+
+nav:
+  - Home: index.md
+  - PAT Data Structure: pat_data_structure.md
+  - CLI Usage: cli.md
+  - Compute Score: compute_score.md
+  - Compile Answers: compile_answers.md
+  - Compile Questionnaires: compile_questionaires.md
+  - Wrangle Data: wrangle_data.md
+  - Utils: utils.md
+  - Rand YAML & Structure JSON: rand_yaml_and_structure_json.md
