@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>PatJsonParser Class - pat_data_processing</title>
+    <title>Compute Score - pat_data_processing</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "PatJsonParser Class";
+        var mkdocs_page_name = "Compute Score";
         var mkdocs_page_input_path = "compute_score.md";
         var mkdocs_page_url = null;
       </script>
@@ -47,6 +47,60 @@
                 <li class="toctree-l1"><a class="reference internal" href="../pat_data_structure/">PAT Data Structure</a>
                 </li>
               </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../cli/">CLI Usage</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Compute Score</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#__init__self-file_path-dry_runfalse">__init__(self, file_path, dry_run=False)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#runself">run(self)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#step_into_roundself-round_value">step_into_round(self, round_value)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#store_actor_locsself-tick_value">store_actor_locs(self, tick_value)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#update_actor_coinsself-tick_value">update_actor_coins(self, tick_value)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#add_coinself-coin_value-which_user">add_coin(self, coin_value, which_user)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#count_key_pressesself-new_key">count_key_presses(self, new_key)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#draw_graphself">draw_graph(self)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#picked_up_binary_maskself">picked_up_binary_mask(self)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#calc_euc_distself">calc_euc_dist(self)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#calc_gaussian_distself-masks_new_dim-player_dists-level">calc_gaussian_dist(self, masks_new_dim, player_dists, level)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#avg_dist_graphsself">avg_dist_graphs(self)</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../compile_answers/">Compile Answers</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../compile_questionaires/">Compile Questionnaires</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../wrangle_data/">Wrangle Data</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../utils/">Utils</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../rand_yaml_and_structure_json/">Rand YAML & Structure JSON</a>
+                </li>
+              </ul>
       </div>
     </div>
     </nav>
@@ -61,7 +115,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">PatJsonParser Class</li>
+      <li class="breadcrumb-item active">Compute Score</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -121,6 +175,10 @@
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../cli/" class="btn btn-neutral float-left" title="CLI Usage"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../compile_answers/" class="btn btn-neutral float-right" title="Compile Answers">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -142,6 +200,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
+      <span><a href="../cli/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../compile_answers/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
