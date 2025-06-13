@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Wrangle Data - pat_data_processing</title>
+    <title>Structure JSON - pat_data_processing</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Wrangle Data";
-        var mkdocs_page_input_path = "wrangle_data.md";
+        var mkdocs_page_name = "Structure JSON";
+        var mkdocs_page_input_path = "structure_json.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -63,24 +63,8 @@
                 <li class="toctree-l1"><a class="reference internal" href="../compile_questionnaires/">Compile Questionnaires</a>
                 </li>
               </ul>
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="#">Wrangle Data</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#__init__self-data_path-dry_runfalse">__init__(self, data_path, dry_run=False)</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#run_wranglingself">run_wrangling(self)</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#wrangle_dataself">wrangle_data(self)</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#wrangle_diffsself">wrangle_diffs(self)</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#add_accself">add_acc(self)</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#most_responses_correct_applyresponse">most_responses_correct_apply(response)</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#save_allself">save_all(self)</a>
-    </li>
-    </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../wrangle_data/">Wrangle Data</a>
                 </li>
               </ul>
               <ul>
@@ -91,8 +75,18 @@
                 <li class="toctree-l1"><a class="reference internal" href="../rand_yaml/">Rand YAML</a>
                 </li>
               </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../structure_json/">Structure JSON</a>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Structure JSON</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#blocks">blocks</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#example">Example:</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                 </li>
               </ul>
       </div>
@@ -109,7 +103,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Wrangle Data</li>
+      <li class="breadcrumb-item active">Structure JSON</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -118,36 +112,41 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="datawrangler-class"><code>DataWrangler</code> Class</h1>
-<p>Processes compiled participant data, questionnaire responses, and metrics.</p>
+                <h1 id="structurejson"><code>structure.json</code></h1>
+<p>Block structure defined in the JSON configuration used during the PAT study.</p>
 <hr />
-<h3 id="__init__self-data_path-dry_runfalse"><code>__init__(self, data_path, dry_run=False)</code></h3>
-<p>Initializes with paths to compiled data, questionnaire data, and game-level <code>.npz</code> data. </p>
-<p>Raises errors if expected files are not found. Also loads the full list of participant data by calling <a href="../utils/#load_datacompiled_csv-questionaire_path-pat_data_path"><code>load_data()</code></a>.</p>
+<h3 id="overview">Overview</h3>
+<p>The <code>structure.json</code> file defines:</p>
+<ul>
+<li>The content and layout of each block</li>
+<li>The different possible block orders (<code>structure0</code> - <code>structure7</code>) used for counterbalancing</li>
+<li>A special structure (<code>structure8</code>) containing <code>"test"</code> and <code>"end"</code></li>
+</ul>
+<p>Participants are assigned one of the <code>structure0</code> - <code>structure7</code> structures via their condition number in <a href="../rand_yaml/"><code>rand.yaml</code></a>.</p>
 <hr />
-<h3 id="run_wranglingself"><code>run_wrangling(self)</code></h3>
-<p>Runs <code>wrangle_data()</code>, <code>wrangle_diffs()</code>, <code>add_acc()</code>, and <code>save_all()</code></p>
-<hr />
-<h3 id="wrangle_dataself"><code>wrangle_data(self)</code></h3>
-<p>Creates a DataFrame that contains coin scores + GMM features, questionnaire answers, and merged subscale scores from <code>questionaire_scores.csv</code>, which is stored in <code>self.PAT_df</code>.</p>
-<hr />
-<h3 id="wrangle_diffsself"><code>wrangle_diffs(self)</code></h3>
-<p>Calculates differences -- subtracts post-manipulation from neutral block scores and adds diff and ratio columns comparing positive and negative conditions. This is stored in <code>self.PAT_diffed_df</code>.</p>
-<hr />
-<h3 id="add_accself"><code>add_acc(self)</code></h3>
-<p>Calculates coin collection accuracy  -- determines which actor collected the most coins in each block, determines whether the player collected the most coins, determines whether the player correctly guessed who got the most coins. This is stored in <code>self.PAT_acc_df</code>.</p>
-<hr />
-<h3 id="most_responses_correct_applyresponse"><code>most_responses_correct_apply(response)</code></h3>
-<p>Returns <code>True</code> if participant believes they have collected the most coins and <code>False</code> otherwise.</p>
-<hr />
-<h3 id="save_allself"><code>save_all(self)</code></h3>
-<p>If not in dry run mode, saves <code>pat_compiled_sheet_&lt;DATE&gt;.csv</code>, <code>pat_compiled_sheet_diffed_&lt;DATE&gt;.csv</code>, and <code>pat_diffes_with_accuracy_&lt;DATE&gt;.csv</code></p>
+<h3 id="blocks"><code>blocks</code></h3>
+<p>Each entry under <code>"blocks"</code> defines:</p>
+<ul>
+<li><code>description</code>: a label of the experimental manipulation (e.g., <code>"coin: neutral -&gt; positive"</code>).</li>
+<li><code>layout</code>: a sequence of <code>[segment_name, repeat_count]</code> pairs that define how the block is structured.</li>
+</ul>
+<h4 id="example">Example:</h4>
+<pre><code class="language-json">&quot;block2&quot;: {
+  &quot;description&quot;: &quot;coin: neutral -&gt; positive&quot;,
+  &quot;layout&quot;: [
+    [&quot;neutral&quot;, 2],
+    [&quot;questions&quot;, 1],
+    [&quot;goodCoin&quot;, 4],
+    [&quot;questions&quot;, 1],
+    [&quot;after_block_questions&quot;, 1]
+  ]
+}
+</code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../compile_questionnaires/" class="btn btn-neutral float-left" title="Compile Questionnaires"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../utils/" class="btn btn-neutral float-right" title="Utils">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../rand_yaml/" class="btn btn-neutral float-left" title="Rand YAML"><span class="icon icon-circle-arrow-left"></span> Previous</a>
     </div>
 
   <hr/>
@@ -170,10 +169,8 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../compile_questionnaires/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../rand_yaml/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
-    
-      <span><a href="../utils/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

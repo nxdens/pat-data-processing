@@ -80,7 +80,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../compile_questionaires/">Compile Questionnaires</a>
+                <li class="toctree-l1"><a class="reference internal" href="../compile_questionnaires/">Compile Questionnaires</a>
                 </li>
               </ul>
               <ul>
@@ -92,7 +92,11 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../rand_yaml_and_structure_json/">Rand YAML & Structure JSON</a>
+                <li class="toctree-l1"><a class="reference internal" href="../rand_yaml/">Rand YAML</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../structure_json/">Structure JSON</a>
                 </li>
               </ul>
       </div>
@@ -119,36 +123,147 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="patdatastructure-class"><code>PatDataStructure</code> Class</h1>
-<p>The <code>PatDataStructure</code> class is used to track inidivual participant game data across all 24 levels.</p>
+<p>The <code>PatDataStructure</code> class is used to track individual participant game data across the 24 game levels.</p>
 <hr />
 <h3 id="__init__self-file_pathnone-dry_runfalse-save_dirnone"><code>__init__(self, file_path=None, dry_run=False, save_dir=None)</code></h3>
 <p>Initializes a <code>PatDataStructure</code> instance with respective parameters. The <code>file_path</code> parameter indicates where the raw data is. Set <code>dry_run</code> to true for tracing information. <code>save_dir</code> is currently not used in the code base. </p>
-<p>PatDataStucture stores information for each tick (a specified unit of time) of the game. This information includes the location of the player and each of the three AI agents, the average distance from the player to the uncollected coins on board, the number of coins the player has collected, the number of keys the player has collected. As the processing of the data is happening, the data structure also stores information related to where the coins are located and the ticks at which the player / one of the agents has collected a coin. The data is stored level by level.</p>
+<p>PatDataStucture stores information for each tick (the time at which a new frame is drawn) of the game. This information includes the location of the player and each of the three AI agents, the average distance from the player to the uncollected coins on board, the number of coins the player has collected, the number of keys the player has collected. As the processing of the data is happening, the data structure also stores information related to where the coins are located and the ticks at which the player / one of the agents has collected a coin. The data is stored level by level.</p>
+<p>List of all the variables defined in <code>__init__</code>:</p>
+<ul>
+<li><code>self.file_path</code> – <code>str | None</code>  </li>
+<li><code>self.dry_run</code> – <code>bool</code>  </li>
+<li><code>self.logger</code> – <code>logging.Logger</code>  </li>
+<li><code>self.data_folder_path</code> – <code>str</code>  </li>
+<li><code>self.save_dir</code> – <code>str | None</code>  </li>
+<li>
+<p><code>self.TOTAL_LEVELS</code> – <code>int</code>  </p>
+</li>
+<li>
+<p><code>self.current_level</code> – <code>int</code>  </p>
+</li>
+<li><code>self.player_coins</code> – <code>int</code>  </li>
+<li><code>self.e1_coins</code> – <code>int</code>  </li>
+<li><code>self.e2_coins</code> – <code>int</code>  </li>
+<li><code>self.e3_coins</code> – <code>int</code>  </li>
+<li><code>self.starting_coins</code> – <code>int</code>  </li>
+<li><code>self.current_key</code> – <code>str</code>  </li>
+<li><code>self.loc_of_player</code> – <code>tuple[int, int]</code>  </li>
+<li><code>self.loc_of_e1</code> – <code>tuple[int, int]</code>  </li>
+<li><code>self.loc_of_e2</code> – <code>tuple[int, int]</code>  </li>
+<li><code>self.loc_of_e3</code> – <code>tuple[int, int]</code>  </li>
+<li><code>self.coin_index</code> – <code>int</code>  </li>
+<li><code>self.num_coins_picked_up</code> – <code>int</code>  </li>
+<li>
+<p><code>self.coin_picked_up</code> – <code>bool</code>  </p>
+</li>
+<li>
+<p><code>self.computed_data</code> – <code>np.ndarray[object]</code>  </p>
+</li>
+<li><code>self.player_locs</code> – <code>np.ndarray[object]</code>  </li>
+<li><code>self.e1_locs</code> – <code>np.ndarray[object]</code>  </li>
+<li><code>self.e2_locs</code> – <code>np.ndarray[object]</code>  </li>
+<li><code>self.e3_locs</code> – <code>np.ndarray[object]</code>  </li>
+<li><code>self.player_avg_distance</code> – <code>np.ndarray[object]</code>  </li>
+<li><code>self.player_level_score</code> – <code>np.ndarray[object]</code>  </li>
+<li><code>self.tick_coin_picked_up</code> – <code>np.ndarray[object]</code>  </li>
+<li><code>self.tick_keys_pressed</code> – <code>np.ndarray[object]</code>  </li>
+<li><code>self.tick_keys_binary</code> – <code>np.ndarray[object]</code>  </li>
+<li><code>self.locations_of_coins</code> – <code>np.ndarray[object]</code>  </li>
+<li><code>self.coins_key_presses</code> – <code>np.ndarray[object]</code>  </li>
+<li><code>self.coin_ticks</code> – <code>np.ndarray[object]</code>  </li>
+<li><code>self.player_coin_ticks</code> – <code>np.ndarray[object]</code>  </li>
+<li><code>self.all_ticks</code> – <code>np.ndarray[object]</code></li>
+</ul>
 <hr />
 <h3 id="init_level_stuctureself-level-int"><code>init_level_stucture(self, level: int)</code></h3>
-<p>Initializes an empty data structure for the passed in game level.</p>
+<p>Initializes an empty data structure for the passed in game level. An empty data structure refers is when all the attributes consist of empty Pythons lists for the corresponding passed in level.</p>
 <hr />
 <h3 id="convert_to_np_arrayself-level-int"><code>convert_to_np_array(self, level: int)</code></h3>
-<p>Converts passed in game level data into corresponding NumPy arrays, which leads to more efficient storage / computation. </p>
+<p>Converts the passed in level's attributes, which are Python lists containing the participant's game data for that level, to NumPy arrays. This is for more efficient storage / computation. </p>
 <hr />
 <h3 id="group_levelsself-dict"><code>group_levels(self) -&gt; dict</code></h3>
-<p>Groups levels into separate folders which correspond to a block. This method searches for a break in the contiguity of the levels as this break indicates the next block. Within the game, levels 1-2 are part of the first block, levels 4–7 are part of the second block, levels 10–11 are part of the third block, levels 13–16 are part of the fourth block, levels 19–20 are part of the fifth block, levels 22–25 are part of the sixth block, levels 28–29 are part of the seventh block, and levels 31–34 are part of the eighth block. There are no levels 3, 8–9, 12, 17–18, 21, 26–27, or 30, and the breakage there signifies the end of the grouping and the lead on to the next group. The blocks that contain solely two levels are the neutral blocks. </p>
-<p>This structure is mirrored in the naming of the folders, where each folder is labeled using the pattern levels_<start><em>to</em><end>. For example, levels_1_to_2, levels_4_to_7, and so on.</p>
+<p>Groups levels into separate folders which correspond to a block. This method searches for a break in the contiguity of the levels as this break indicates the next block. </p>
+<p>Within the game, </p>
+<ul>
+<li>levels <code>1-2</code> are part of the <strong>first</strong> block, </li>
+<li>levels <code>4–7</code> are part of the <strong>second</strong> block, </li>
+<li>levels <code>10–11</code> are part of the <strong>third</strong> block, </li>
+<li>levels <code>13–16</code> are part of the <strong>fourth</strong> block, </li>
+<li>levels <code>19–20</code> are part of the <strong>fifth</strong> block, </li>
+<li>levels <code>22–25</code> are part of the <strong>sixth</strong> block, </li>
+<li>levels <code>28–29</code> are part of the <strong>seventh</strong> block, and </li>
+<li>levels <code>31–34</code> are part of the <strong>eighth</strong> block</li>
+</ul>
+<p>There are no levels 3, 8–9, 12, 17–18, 21, 26–27, or 30, and the breakage there signifies the end of the grouping and the lead on to the next group. Gaps in the level sequence are a transition between block types (game, post-block questionnaire, post-game assessment).</p>
+<p>The blocks that contain solely <strong>two levels are the neutral blocks</strong>. </p>
+<p>This structure is mirrored in the naming of the folders, where each folder is labeled using the pattern levels_start_to_end. For example, levels_1_to_2, levels_4_to_7, and so on.</p>
+<p>Returns a dictionary mapping each level to its corresponding folder name.</p>
 <hr />
 <h3 id="save_level_dataself-level-int-pathnone"><code>save_level_data(self, level: int, path=None)</code></h3>
 <p>Saves level-specific data to an <code>.npz</code> file within the corresponding folder.</p>
+<p>The data includes:</p>
+<pre><code class="language-python">npz_file_path,
+computed_data=self.computed_data[level],
+player_locs=self.player_locs[level],
+e1_locs=self.e1_locs[level],
+e2_locs=self.e2_locs[level],
+e3_locs=self.e3_locs[level],
+player_avg_distance=self.player_avg_distance[level],
+player_level_score=self.player_level_score[level],
+tick_coin_picked_up=self.tick_coin_picked_up[level],
+tick_keys_pressed=self.tick_keys_pressed[level],
+tick_keys_binary=self.tick_keys_binary[level],
+locations_of_coins=self.locations_of_coins[level],
+coins_key_presses=self.coins_key_presses[level],
+coin_ticks=self.coin_ticks[level],
+player_coin_ticks=self.player_coin_ticks[level],
+all_ticks=self.all_ticks[level],
+</code></pre>
 <hr />
 <h3 id="save_dataself-path-str-none"><code>save_data(self, path: str = None)</code></h3>
-<p>Saves all levels' data by calling <code>save_level_data()</code> for each level. There are four main folders, each labeled with the specific condition. Within </p>
+<p>Saves all levels' data by calling <code>save_level_data()</code> for each level at the path defined by the <code>path</code> parameter. </p>
 <hr />
 <h3 id="load_dataself-root_folder-str"><code>load_data(self, root_folder: str)</code></h3>
-<p>Loads all <code>.npz</code> files from the files saved by <code>save_data</code>, populating each field.</p>
+<p>Loads all <code>.npz</code> files from the files saved by <code>save_data</code>, filling each attribute with the data within the <code>.npz</code> file. </p>
+<pre><code class="language-python">self.computed_data[level] = data[&quot;computed_data&quot;]
+self.player_locs[level] = data[&quot;player_locs&quot;]
+self.e1_locs[level] = data[&quot;e1_locs&quot;]
+self.e2_locs[level] = data[&quot;e2_locs&quot;]
+self.e3_locs[level] = data[&quot;e3_locs&quot;]
+self.player_avg_distance[level] = data[
+    &quot;player_avg_distance&quot;
+]
+self.player_level_score[level] = (
+    data[&quot;player_level_score&quot;],
+)
+self.tick_coin_picked_up[level] = data[
+    &quot;tick_coin_picked_up&quot;
+]
+self.tick_keys_pressed[level] = data[&quot;tick_keys_pressed&quot;]
+self.tick_keys_binary[level] = data[&quot;tick_keys_binary&quot;]
+self.locations_of_coins[level] = data[&quot;locations_of_coins&quot;]
+self.coins_key_presses[level] = data[&quot;coins_key_presses&quot;]
+self.coin_ticks[level] = data[&quot;coin_ticks&quot;]
+self.player_coin_ticks[level] = data[&quot;player_coin_ticks&quot;]
+self.all_ticks[level] = data[&quot;all_ticks&quot;]
+</code></pre>
 <hr />
 <h3 id="add_dataself-target_var-list-level-int-input_data"><code>add_data(self, target_var: list, level: int, input_data)</code></h3>
 <p>Appends the data to respective level’s passed in field. <code>target_var</code> is the specific field we're trying to add the data to, <code>level</code> is the index at which to store this data, and <code>input_data</code> is what's going to be added in. </p>
 <hr />
 <h3 id="reset_varsself"><code>reset_vars(self)</code></h3>
 <p>Resets temporary game variables to 0.</p>
+<p>The temporary game variables are:</p>
+<pre><code class="language-python">self.total_keys_pressed
+self.keys_pressed_last_window
+self.player_coins
+self.e1_coins
+self.e2_coins
+self.e3_coins
+self.start_window_flag
+self.coin_index
+self.num_coins_picked_up
+</code></pre>
 <hr />
               
             </div>

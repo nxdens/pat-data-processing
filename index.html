@@ -64,7 +64,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="compile_questionaires/">Compile Questionnaires</a>
+                <li class="toctree-l1"><a class="reference internal" href="compile_questionnaires/">Compile Questionnaires</a>
                 </li>
               </ul>
               <ul>
@@ -76,7 +76,11 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="rand_yaml_and_structure_json/">Rand YAML & Structure JSON</a>
+                <li class="toctree-l1"><a class="reference internal" href="rand_yaml/">Rand YAML</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="structure_json/">Structure JSON</a>
                 </li>
               </ul>
       </div>
@@ -107,14 +111,116 @@
 <hr />
 <h2 id="contents">Contents</h2>
 <ul>
-<li><a href="pat_data_structure/">PAT Data Structure</a> - data structure in which PAT game data is stored.</li>
-<li><a href="cli/">CLI Interface</a> — command-line usage and arguments for running the application.</li>
-<li><a href="compute_score/">Compute Score</a> — used for parsing through the raw game data (stored in JSON files) and generating metrics such as coin pick ups and key presses.</li>
-<li><a href="compile_answers/">Compile Answers</a> — formats participant responses from in-game questions.</li>
-<li><a href="compile_questionaires/">Compile Questionnaires</a> — calclates scores for measures such as SWLS, CSE, and MSPSS.</li>
-<li><a href="wrangle_data/">Wrangle Data</a> — combines together datasets and calculates differences.</li>
-<li><a href="utils/">Utilities</a> — contains constants and helpers.</li>
-<li><a href="rand_yaml_and_structure_json/">Block Randomization</a> — additional information on how participants were assigned randomized conditions via <code>rand.yaml</code> and <code>structure.json</code>.</li>
+<li>
+<p><a href="pat_data_structure/">PAT Data Structure</a> </p>
+<ul>
+<li>Data structure in which PAT game data is stored</li>
+<li>Parameters of initialization are file_path (str), dry_run (bool), and save_dir (str)</li>
+<li>Information about the individual's game is stored on a level-by-level basis</li>
+<li>Data is stored as Python lists which are then converted to numpy arrays for ease in storage and computation</li>
+<li>Levels are grouped based on breakage in contiguity</li>
+<li>Data is saved into <code>.npz</code> files</li>
+<li>There are temporary variables within the game which can be reset to 0</li>
+</ul>
+</li>
+<li>
+<p><a href="cli/">CLI Interface</a> </p>
+<ul>
+<li>Command-line usage and arguments for running the application</li>
+<li>Commands for JSON parsing, enabling dry run mode, compiling the JSON into a single CSV, wrangling previous stages, enabling questionnaire data processing, enabling all steps, enabling debug mode</li>
+</ul>
+</li>
+<li>
+<p><a href="compute_score/">Compute Score</a></p>
+<ul>
+<li>Parses through the raw game data (stored in JSON files) </li>
+<li>Stores information of each tick level by level</li>
+<li>Generates metrics such as coin pick ups and key presses</li>
+</ul>
+</li>
+<li>
+<p><a href="compile_answers/">Compile Answers</a></p>
+<ul>
+<li>Formats participant responses from questionnaire responses </li>
+<li>Uses randomization and structure information to determine block ordering</li>
+<li>Outputs a CSV where each row contains <code>PAT_ID</code>, <code>Question Type</code>, <code>Block Type</code>, <code>Question</code>, and <code>Score</code></li>
+</ul>
+</li>
+<li>
+<p><a href="compile_questionnaires/">Compile Questionnaires</a> </p>
+<ul>
+<li>Calclates scores:<ul>
+<li><code>EDS</code> — Everyday Discrimination Scale</li>
+<li><code>SWBS</code> — Social Well-Being Scale (with subscales)</li>
+<li><code>RiC</code> — Race in Context interactions</li>
+<li><code>CSE</code> — Collective Self-Esteem Scale (with subscales)</li>
+<li><code>SWLS</code> — Satisfaction With Life Scale</li>
+<li><code>MSPSS</code> — Multidimensional Scale of Perceived Social Support (with subscales)</li>
+<li><code>Chronic Strains</code> — cumulative life stressors</li>
+</ul>
+</li>
+<li>Outputs total and subscale scores (if <code>subscales=True</code>) per participant</li>
+<li>Drops raw columns by default unless <code>drop_cols=False</code></li>
+</ul>
+</li>
+<li>
+<p><a href="wrangle_data/">Wrangle Data</a> </p>
+<ul>
+<li>Combines together datasets and calculates differences</li>
+<li>Combines game responses, questionnaire scores, and coin performance data into one DataFrame<ul>
+<li>Calculates participant's changes across conditions for each block</li>
+<li>Derives performance-based accuracy scores (e.g., whether participants correctly identified who collected the most coins)</li>
+<li>Outputs three versions of the data if <code>dry_run=True</code><ul>
+<li><code>pat_compiled_sheet_&lt;date&gt;.csv</code> — raw merged dataset</li>
+<li><code>pat_compiled_sheet_diffed_&lt;date&gt;.csv</code> — includes calculated differences and ratios</li>
+<li><code>pat_diffes_with_accuracy_&lt;date&gt;.csv</code> — adds perception accuracy correctness flags</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><a href="utils/">Utilities</a> </p>
+<ul>
+<li>
+<p>Contains constants and helper functions such as:</p>
+<ul>
+<li><code>BLOCKTYPES</code>  -  speed and coin, neutral --&gt; positive, neutral --&gt; negative, neutral / post-manipulation / post-block</li>
+<li><code>COINTYPES</code>  -  coin and speed, positive and negative</li>
+<li><code>COINBLOCKS</code>  -  BLOCKTYPES excluding post-block</li>
+<li><code>QUESTIONTYPES</code>  -  actors' coins and the questions the participant was asked</li>
+<li><code>NEUTRALKEYS</code>  -  the neutral BLOCKTYPES</li>
+<li><code>STATSTYPES</code>  -  Gaussian matrix metrics</li>
+<li><code>DEMOGRAPHIC_COLS</code>, <code>SWBS_COLS</code>, <code>RIC_COLS</code>, <code>EDS_COLS</code>, <code>CSE_COLS</code>, <code>SWLS_COLS</code>, <code>MSPSS_COLS</code>, <code>CHRONIC_STRAINS_COLS</code>  -  demographic and scale cols</li>
+<li><code>load_data(compiled_csv="../question_answers_round_3_with_coins.csv", questionaire_path="../data/CGHP Study - Questionnaires_July 22, 2024_08.16.csv", pat_data_path="../data/PAT",)</code>  -  loads and prepares questionnaire and gameplay data</li>
+<li><code>configure_logging(logging_level, filename)</code>  -  configures logging via passed in logging level string and name of log file to save in <code>/logs/</code></li>
+<li><code>replace_with_parentheses_value(s)</code>  -  extracts the first substring enclosed in parentheses from <code>s</code> and replaces the entire <code>(value)</code> with <code>value</code></li>
+<li><code>dict_append_or_create_list(dict, key, value)</code>  -  appends a value to a list in a dictionary or creates a new list if the key doesn't exist</li>
+</ul>
+</li>
+<li>
+<p>And contains the nonessential <code>PatInfo</code> Class:</p>
+<ul>
+<li>Contains a participant's data profile, including questionnaire responses and game data and metrics</li>
+<li>Loads and processes the data through GMM computation and questionnaire response organization</li>
+<li>Methods for coin performance analysis, step functions calculation, and raw and derived data aggregation</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><a href="rand_yaml/">Block Randomization</a>  </p>
+<ul>
+<li>Maps each participant to one of eight counterbalancing block sequences (<code>structure0</code>–<code>structure7</code>)</li>
+</ul>
+</li>
+<li>
+<p><a href="structure_json/">Structure JSON</a>  </p>
+<ul>
+<li>Defines the layout of each block and the sequence of blocks for each randomized structure used</li>
+</ul>
+</li>
 </ul>
               
             </div>
@@ -164,5 +270,5 @@
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-06-04 16:17:41.849251+00:00
+Build Date UTC : 2025-06-13 03:40:02.260799+00:00
 -->

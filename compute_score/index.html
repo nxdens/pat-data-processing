@@ -86,7 +86,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../compile_questionaires/">Compile Questionnaires</a>
+                <li class="toctree-l1"><a class="reference internal" href="../compile_questionnaires/">Compile Questionnaires</a>
                 </li>
               </ul>
               <ul>
@@ -98,7 +98,11 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../rand_yaml_and_structure_json/">Rand YAML & Structure JSON</a>
+                <li class="toctree-l1"><a class="reference internal" href="../rand_yaml/">Rand YAML</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../structure_json/">Structure JSON</a>
                 </li>
               </ul>
       </div>
@@ -125,11 +129,12 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="patjsonparser-class"><code>PatJsonParser</code> Class</h1>
-<p>The <code>PatJsonParser</code> class parses the raw game data which comes in the form of JSON files. This data is converted into structured arrays. These arrays contain information at each tick of number of coins collected, number of key presses, etc. along with the broader location of coins. The information is processed, saved, and visualized in order to analyze further.</p>
+<p>The <code>PatJsonParser</code> class parses the raw game data which comes in the form of JSON files. This data is converted into structured arrays. These arrays contain information at each tick. A <strong>tick refers to the time at which a new frame appears within the game</strong>. The information that the arrays contain includes the number of coins collected, number of key presses, etc. along with the broader location of coins. The information is processed, saved, and visualized in order to analyze further.</p>
+<p>The structure of the JSON file is a triple nested dictionary. The top-level key is a game level (e.g., "level 0", "level 1"). Each level contains multiple rounds, and each round consists of ticks, which are individual time steps. The parser steps through each level, then each round, and finally processes data tick by tick.</p>
 <hr />
 <h3 id="__init__self-file_path-dry_runfalse"><code>__init__(self, file_path, dry_run=False)</code></h3>
 <p>Initializes a new instance of the <code>PatJsonParser</code>. <code>file_path</code>specifies the path to the JSON file containing the raw data. Set <code>dry_run</code> to true for tracing information.</p>
-<p><code>self.data</code> contains the Parsed JSON content, <code>self.this_file</code>tracks the current JSON file file path being parsed, <code>self.store_data</code> is the instance of <code>PatDataStructure</code> responsible for managing the current JSON's data, <code>self.window_length</code> manages the windowed statistics.</p>
+<p><code>self.data</code> contains the Parsed JSON content, <code>self.this_file</code> tracks the current JSON file path being parsed, <code>self.store_data</code> is the instance of <code>PatDataStructure</code> responsible for managing the current JSON's data, <code>self.window_length</code> manages the windowed statistics.</p>
 <p><code>total_keys_pressed</code>, <code>keys_pressed_last_window</code>, <code>start_window_tick</code>, <code>current_tick</code>, and <code>keys_pressed_this_window</code> are state variables. </p>
 <hr />
 <h3 id="runself"><code>run(self)</code></h3>
@@ -137,17 +142,17 @@
 <p>The loop searches for the next level, calls <code>step_into_round()</code>, computes metrics, such as Euclidean and Gaussian distances, saves the data to an <code>.npz</code> file for each level, and saves visualizations of key presses and average distance to coins.</p>
 <hr />
 <h3 id="step_into_roundself-round_value"><code>step_into_round(self, round_value)</code></h3>
-<p>Processes game data within a round within a level tick by tick. This method tracks coin pickups, stores the actors' locations, counts key presses, and computes metrics per window through method calls.</p>
+<p>Processes game data within a round within a level tick by tick. This method tracks coin pick ups, stores the actors' locations, counts key presses, and computes metrics per window through method calls.</p>
 <p>The method appends the computed values to <code>computed_data</code>.</p>
 <hr />
 <h3 id="store_actor_locsself-tick_value"><code>store_actor_locs(self, tick_value)</code></h3>
 <p>Stores each actors' (player and the three AI agents) locations per ticks by extracting coordinates and appending <code>(x, y)</code> to <code>PatDataStructure</code>'s list.</p>
 <hr />
 <h3 id="update_actor_coinsself-tick_value"><code>update_actor_coins(self, tick_value)</code></h3>
-<p>Calls <code>add_coin()</code> to store the coin count for each respective actor.</p>
+<p>Calls <code>add_coin()</code> (which updates actor coins upon incrementing) to store the coin count for each respective actor. </p>
 <hr />
 <h3 id="add_coinself-coin_value-which_user"><code>add_coin(self, coin_value, which_user)</code></h3>
-<p>Increments the respective actor's coin count if there has been a change in the number of coins collected, adds the location of the coin collected with the corresponding tick and level, to the coin_ticks variable. It also adds this information to the variable storing which tick the respective actor collects a coin. </p>
+<p>Increments the respective actor's coin count if there has been a change in the number of coins collected, adds the location of the coin collected with the corresponding tick and level, to the <code>coin_ticks</code> variable. It also adds this information to the variable storing which tick the respective actor collects a coin. </p>
 <hr />
 <h3 id="count_key_pressesself-new_key"><code>count_key_presses(self, new_key)</code></h3>
 <p>If a new key is pressed, logs a 1, increments the variable tracking the number of keys pressed, and stores the tick and level at which the key was pressed.</p>

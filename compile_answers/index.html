@@ -68,7 +68,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../compile_questionaires/">Compile Questionnaires</a>
+                <li class="toctree-l1"><a class="reference internal" href="../compile_questionnaires/">Compile Questionnaires</a>
                 </li>
               </ul>
               <ul>
@@ -80,7 +80,11 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../rand_yaml_and_structure_json/">Rand YAML & Structure JSON</a>
+                <li class="toctree-l1"><a class="reference internal" href="../rand_yaml/">Rand YAML</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../structure_json/">Structure JSON</a>
                 </li>
               </ul>
       </div>
@@ -107,12 +111,22 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="compile_answerspy"><code>Compile_Answers.py</code></h1>
-<p>Parses participant game responses and end-of-game survey data. Folders are structured like <code>PAT001</code>, <code>PAT002</code>, etc.</p>
+<p>The PAT task has two advantage blocks and two disadvantage blocks. The advantage and disadvantage blocks are further broken down into speed or coin. The blocks are randomized with a counterbalanced block design. Each block has two neutral rounds, an inter-trial questionnaire, four rounds based on the condition, an inter-trial questionnaire, and a post-block questionnaire. After the four blocks, there is a postgame assessment. There are 36 total rounds, 24 of those rounds are game rounds and the rest are questionnaire rounds (either inter-trial or post-block).</p>
+<p>The data is stored under <code>PAT_round2/</code> where each immediate subfolder is labeled <code>PATXXX</code> with the digit denoting the participant's unique ID. Within the subfolder, there is a directory labeled with a timestamp and within there is the participant's corresponding <code>data.json</code> file. Below is a visual of the structure:</p>
+<pre><code>PAT_round2/
+├── PAT001/
+│   └── [timestamp]/
+│       └── data.json
+├── PAT002/
+│   └── [timestamp]/
+│       └── data.json
+...
+</code></pre>
 <hr />
 <h3 id="get_participant_answersfolder-randomization-structures-id0"><code>get_participant_answers(folder, randomization, structures, id=0)</code></h3>
 <p>Parses the <code>data.json</code> file in a participant's folder and extracts the participant's question responses and final coin tallies for all actors.</p>
 <p>The method uses the participant’s ID to look up their assigned structure and unrolls the block/question template accordingly.</p>
-<p>The method eturns a list of rows with the format:<br />
+<p>The method returns a list of rows with the format:<br />
 <code>[PAT_ID, Question Type, Block Type, Question, Answer]</code></p>
 <hr />
 <h3 id="find_foldersstart"><code>find_folders(start)</code></h3>
@@ -121,14 +135,16 @@
 <p><strong>This method is currently unused</strong></p>
 <hr />
 <h3 id="mainpathpat_round2-output_pathtemp_pat_variablescsv-dry_runfalse"><code>main(path="PAT_round2/", output_path="temp_PAT_variables.csv", dry_run=False)</code></h3>
-<p>Loads randomization information for the participant from <code>rand.yaml</code>, loads block/question structure from <code>structure.json</code>, calls <code>find_folders()</code> to extract paths of participant folders, calls <code>get_participant_answers()</code> to parse and format the data, converts the output into a pandas DataFrame, and unless <code>dry_run=True</code>, saves the DataFrame to CSV.</p>
-<p>The method returns the final DataFrame.</p>
+<p>The <code>path</code> parameter contains a directory in which there are folders labeled <code>PATXXX</code>. </p>
+<p>The <code>output_path</code> is the name of the file to which the processed data will be written to. </p>
+<p>This method loads randomization information for the participant from <code>rand.yaml</code>, loads block/question structure from <code>structure.json</code>, calls <code>find_folders()</code> to extract paths of participant folders, calls <code>get_participant_answers()</code> to parse and format the data, converts the output into a pandas DataFrame, and unless <code>dry_run=True</code>, saves the DataFrame to CSV.</p>
+<p>This method returns a final DataFrame with columns <code>["PAT_ID", "Block Type", "Question Type", "Question", "Score"]</code></p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../compute_score/" class="btn btn-neutral float-left" title="Compute Score"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../compile_questionaires/" class="btn btn-neutral float-right" title="Compile Questionnaires">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../compile_questionnaires/" class="btn btn-neutral float-right" title="Compile Questionnaires">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -154,7 +170,7 @@
       <span><a href="../compute_score/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../compile_questionaires/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../compile_questionnaires/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

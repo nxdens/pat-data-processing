@@ -13,7 +13,7 @@
       <script>
         // Current page data
         var mkdocs_page_name = "Compile Questionnaires";
-        var mkdocs_page_input_path = "compile_questionaires.md";
+        var mkdocs_page_input_path = "compile_questionnaires.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -90,7 +90,11 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../rand_yaml_and_structure_json/">Rand YAML & Structure JSON</a>
+                <li class="toctree-l1"><a class="reference internal" href="../rand_yaml/">Rand YAML</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../structure_json/">Structure JSON</a>
                 </li>
               </ul>
       </div>
@@ -117,35 +121,178 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="compile_questionnairespy"><code>Compile_Questionnaires.py</code></h1>
-<p>Processes self-reported questionnaire data collected in CSV format</p>
+<p>Processes self-reported questionnaire data collected in CSV format. This file compiles:</p>
+<ul>
+<li>
+<p><code>Everyday Discrimination Scale (EDS)</code></p>
+</li>
+<li>
+<p><code>Social Well-Being Scale (SWBS)</code> </p>
+<ul>
+<li><code>WB_Integ</code> (Social Integration)</li>
+<li><code>WB_Acce</code> (Social Acceptance)</li>
+<li><code>WB_Contri</code> (Social Contribution)</li>
+<li><code>WB_Actua</code> (Social Actualization)</li>
+<li><code>WB_Coher</code> (Social Coherence)</li>
+</ul>
+</li>
+<li>
+<p><code>Race in Context (RiC)</code></p>
+<ul>
+<li>leisure</li>
+<li>work</li>
+<li>online environments</li>
+</ul>
+</li>
+<li>
+<p><code>Collective Self-Esteem Scale (CSE) looks at total score (CSEsum)</code></p>
+<ul>
+<li><code>CSEmember</code> (membership esteem)</li>
+<li><code>CSEprivate</code> (private regard)</li>
+<li><code>CSEpublic</code> (public regard)</li>
+<li><code>CSEidentity</code> (identity importance)</li>
+</ul>
+</li>
+<li>
+<p><code>Satisfaction With Life Scale (SWLS)</code></p>
+</li>
+<li>
+<p><code>Multidimensional Scale of Perceived Social Support (MSPSS)</code></p>
+<ul>
+<li><code>MSPSS_SigOther</code> (significant others)</li>
+<li><code>MSPSS_Family</code> (family members) </li>
+<li><code>MSPSS_Friend</code> (friends)</li>
+</ul>
+</li>
+<li>
+<p><code>Chronic Strains Scale</code></p>
+</li>
+</ul>
+<p>Merges all compiled scores by participant ID and outputs a unified DataFrame for analysis.</p>
+<p>Tabular summary:</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Function</th>
+<th>Scale + Subscales</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Everyday Discrimination Scale (EDS)</td>
+<td><code>compile_EDS</code></td>
+<td><code>EDS_total</code>, <code>EDS_ChroTotal</code> (chronic weights applied)</td>
+</tr>
+<tr>
+<td>Social Well-Being Scale (SWBS)</td>
+<td><code>compile_SWBS</code></td>
+<td><code>WB_Integ</code>, <code>WB_Acce</code>, <code>WB_Contri</code>, <code>WB_Actua</code>, <code>WB_Coher</code>, <code>WellBeingSum</code></td>
+</tr>
+<tr>
+<td>Race in Context (RiC)</td>
+<td><code>compile_RiC</code></td>
+<td>Frequency and quality across leisure, work, online</td>
+</tr>
+<tr>
+<td>Collective Self-Esteem Scale (CSE)</td>
+<td><code>compile_CSE</code></td>
+<td><code>CSEsum</code>, <code>CSEmember</code>, <code>CSEprivate</code>, <code>CSEpublic</code>, <code>CSEidentity</code></td>
+</tr>
+<tr>
+<td>Satisfaction With Life Scale (SWLS)</td>
+<td><code>compile_SWLS</code></td>
+<td><code>SWLSSum</code></td>
+</tr>
+<tr>
+<td>Multidimensional Scale of Perceived Social Support (MSPSS)</td>
+<td><code>compile_MSPSS</code></td>
+<td><code>MSPSS_total</code>, <code>MSPSS_SigOther</code>, <code>MSPSS_Family</code>, <code>MSPSS_Friend</code></td>
+</tr>
+<tr>
+<td>Chronic Strains Scale</td>
+<td><code>compile_Chronic_Strains</code></td>
+<td><code>ChroStrain_total</code></td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h3 id="compile_edsdf-drop_colstrue"><code>compile_EDS(df, drop_cols=True)</code></h3>
 <p>Calculates Everyday Discrimination Scale scores from the passed in DataFrame.</p>
+<p>Calculates <code>EDS_total</code> through summing raw EDS item responses which is extracted from the DataFrame passed in. </p>
+<p>Calculates <code>EDS_ChroTotal</code> through mapping each response to a fixed weight (based on frequency) and summing the result across items. The weights used are: <code>[0, 0.5, 3, 36, 104, 260]</code>. </p>
 <p>Returns a DataFrame with EDS scores. Drops raw item columns if <code>drop_cols=True</code>.</p>
 <hr />
 <h3 id="compile_swbsdf-subscalestrue-drop_colstrue"><code>compile_SWBS(df, subscales=True, drop_cols=True)</code></h3>
-<p>Computes Social Well-Being Scale total and subscale scores.</p>
-<p>Computes five subscale scores if <code>subscales=True</code>: <code>WB_Integ</code>, <code>WB_Acce</code>, <code>WB_Contri</code>, <code>WB_Actua</code>, <code>WB_Coher</code></p>
+<p>Calculates Social Well-Being Scale total through summing the subscales <code>WB_Integ</code>, <code>WB_Acce</code>, <code>WB_Contri</code>, <code>WB_Actua</code>, and <code>WB_Coher</code>. </p>
+<p>If <code>subscales=True</code>, calculates five subscale scores:</p>
+<ul>
+<li><code>WB_Integ</code>: Social Integration</li>
+<li><code>WB_Acce</code>: Social Acceptance</li>
+<li><code>WB_Contri</code>: Social Contribution</li>
+<li><code>WB_Actua</code>: Social Actualization</li>
+<li><code>WB_Coher</code>: Social Coherence</li>
+</ul>
+<p>Returns a DataFrame with total (and subscale scores if <code>subscales=True</code>). Drops raw item columns if <code>drop_cols=True</code>.</p>
 <hr />
 <h3 id="compile_ricdf-subscalestrue-drop_colstrue"><code>compile_RiC(df, subscales=True, drop_cols=True)</code></h3>
-<p>Processes Race in Context data:</p>
-<p>Calculates frequency and quality of interactions across racial contexts and adds specific metrics for leisure, work, and online contexts if <code>subscales=True</code>.</p>
+<p>Processes Race in Context data.</p>
+<p>Calculates:</p>
+<ul>
+<li><code>RiC_Frequency</code>: frequency of interactions across racial contexts  </li>
+<li><code>RiC_Quality</code>: quality of interactions across racial contexts  </li>
+<li><code>RiC_AveSameRace_freq</code>: average frequency of same-race interactions  </li>
+<li><code>RiC_AveDiffRace_freq</code>: average frequency of different-race interactions  </li>
+<li><code>RiC_AveSameRace_quali</code>: average quality of same-race interactions  </li>
+<li><code>RiC_AveDiffRace_quali</code>: average quality of different-race interactions  </li>
+</ul>
+<p>If <code>subscales=True</code>, also includes frequency and quality metrics for:</p>
+<ul>
+<li>leisure</li>
+<li>work</li>
+<li>online contexts</li>
+</ul>
+<p>Returns a DataFrame with derived <code>RiC</code> metrics. Drops raw item columns if <code>drop_cols=True</code>.</p>
 <hr />
 <h3 id="compile_csedf-subscalestrue-drop_colstrue"><code>compile_CSE(df, subscales=True, drop_cols=True)</code></h3>
-<p>Calculates Collective Self-Esteem metrics such as total score <code>CSEsum</code> Computes four subscales if <code>subscales=True</code>:  <code>CSEmember</code>, <code>CSEprivate</code>, <code>CSEpublic</code>, <code>CSEidentity</code></p>
+<p>Calculates Collective Self-Esteem (CSE) metrics from the passed in DataFrame.</p>
+<p>Calculates:</p>
+<ul>
+<li><code>CSEsum</code>: total CSE score by summing all items</li>
+</ul>
+<p>If <code>subscales=True</code>, calculates the four subscale scores:</p>
+<ul>
+<li><code>CSEmember</code>: membership esteem</li>
+<li><code>CSEprivate</code>: private evaluation</li>
+<li><code>CSEpublic</code>: public evaluation</li>
+<li><code>CSEidentity</code>: identity importance</li>
+</ul>
+<p>Returns a DataFrame with CSE score(s). Drops raw item columns if <code>drop_cols=True</code>.</p>
 <hr />
 <h3 id="compile_swlsdf-drop_colstrue"><code>compile_SWLS(df, drop_cols=True)</code></h3>
-<p>Calculates Satisfaction With Life Scale total score by summing all five SWLS items.</p>
+<p>Calculates Satisfaction With Life Scale (SWLS) total score by summing all SWLS items.</p>
+<p>Returns a DataFrame with <code>SWLS</code> score. Drops raw item columns if <code>drop_cols=True</code>.</p>
 <hr />
 <h3 id="compile_mspssdf-subscalestrue-drop_colstrue"><code>compile_MSPSS(df, subscales=True, drop_cols=True)</code></h3>
 <p>Calculates Multidimensional Scale of Perceived Social Support.</p>
-<p>Returns <code>MSPSS_total</code> as the mean across all items. Calculates three subscale means if <code>subscales=True</code>: <code>MSPSS_SigOther</code>, <code>MSPSS_Family</code>, <code>MSPSS_Friend</code></p>
+<p>Calculates:</p>
+<ul>
+<li><code>MSPSS_total</code>: average of all MSPSS raw items</li>
+</ul>
+<p>If <code>subscales=True</code>, also calculates:</p>
+<ul>
+<li><code>MSPSS_SigOther</code>: support from significant others</li>
+<li><code>MSPSS_Family</code>: support from family</li>
+<li><code>MSPSS_Friend</code>: support from friends</li>
+</ul>
+<p>Returns a DataFrame with score(s). Drops raw item columns if <code>drop_cols=True</code>.</p>
 <hr />
 <h3 id="compile_chronic_strainsdf-drop_colstrue"><code>compile_Chronic_Strains(df, drop_cols=True)</code></h3>
-<p>Calculates the total score from the chronic strains scale as the sum of all relevant items.</p>
+<p>Calculates the total score from the chronic strains scale as the sum of raw Chronic Stains items.</p>
+<p>Returns a DataFrame with score. Drops raw item columns if <code>drop_cols=True</code>.</p>
 <hr />
 <h3 id="maindata_path"><code>main(data_path)</code></h3>
-<p>Loads the raw questionnaire CSV, calls all compilation functions, merges all score DataFrames on articipant ID, writes the merged DataFrame to <code>data/questionaire_scores.csv</code>.</p>
+<p>Loads the raw questionnaire CSV, calls each compilation function, merges all score DataFrames on participant ID, writes the merged DataFrame to <code>data/questionaire_scores.csv</code>.</p>
 <hr />
               
             </div>
