@@ -66,7 +66,7 @@ Appends a value to a list in a dictionary or creates a new list if the key doesn
 
 ## `PatInfo` Class
 
-Contains participant's game + questionnaire data. This class is not essential. 
+Contains participant's game + questionnaire data. This class is not essential. This class uses [`PatDataStructure`](pat_data_structure.md) to load and process game data.
 
 ---
 

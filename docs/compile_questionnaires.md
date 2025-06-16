@@ -12,9 +12,11 @@ Processes self-reported questionnaire data collected in CSV format. This file co
     * `WB_Coher` (Social Coherence)
 
 * `Race in Context (RiC)`
-    * leisure
-    * work
-    * online environments
+    * interactions between and within races across
+        * leisure
+        * work
+        * online environments
+    
 
 * `Collective Self-Esteem Scale (CSE) looks at total score (CSEsum)`
     * `CSEmember` (membership esteem)
@@ -39,11 +41,11 @@ Tabular summary:
 | Category                                                | Function                    | Scale + Subscales                                                                  |
 |---------------------------------------------------------|-----------------------------|------------------------------------------------------------------------------------|
 | Everyday Discrimination Scale (EDS)                     | `compile_EDS`               | `EDS_total`, `EDS_ChroTotal` (chronic weights applied)                            |
-| Social Well-Being Scale (SWBS)                          | `compile_SWBS`              | `WB_Integ`, `WB_Acce`, `WB_Contri`, `WB_Actua`, `WB_Coher`, `WellBeingSum`        |
-| Race in Context (RiC)                                   | `compile_RiC`               | Frequency and quality across leisure, work, online   |
-| Collective Self-Esteem Scale (CSE)                      | `compile_CSE`               | `CSEsum`, `CSEmember`, `CSEprivate`, `CSEpublic`, `CSEidentity`                   |
+| Social Well-Being Scale (SWBS)                          | `compile_SWBS`              | `WB_Integ`, `WB_Acce`, `WB_Contri`, <br>`WB_Actua`, `WB_Coher`, `WellBeingSum`        |
+| Race in Context (RiC)                                   | `compile_RiC`               | Frequency and quality of interactions <br>between and within races across leisure, <br>work, and online contexts  |
+| Collective Self-Esteem Scale (CSE)                      | `compile_CSE`               | `CSEsum`, `CSEmember`, `CSEprivate`, <br>`CSEpublic`, `CSEidentity`                   |
 | Satisfaction With Life Scale (SWLS)                     | `compile_SWLS`              | `SWLSSum`                                                                          |
-| Multidimensional Scale of Perceived Social Support (MSPSS) | `compile_MSPSS`           | `MSPSS_total`, `MSPSS_SigOther`, `MSPSS_Family`, `MSPSS_Friend`                   |
+| Multidimensional Scale <br>of Perceived Social <br>Support (MSPSS) | `compile_MSPSS`           | `MSPSS_total`, `MSPSS_SigOther`, <br>`MSPSS_Family`, `MSPSS_Friend`                   |
 | Chronic Strains Scale                                   | `compile_Chronic_Strains`   | `ChroStrain_total`                                                                 |
 
 
@@ -90,11 +92,11 @@ Calculates:
 * `RiC_AveSameRace_quali`: average quality of same-race interactions  
 * `RiC_AveDiffRace_quali`: average quality of different-race interactions  
 
-If `subscales=True`, also includes frequency and quality metrics for:
+If `subscales=True`, also includes frequency and quality metric of **interactions between and within races** across
 
 * leisure
 * work
-* online contexts
+* online environments
 
 Returns a DataFrame with derived `RiC` metrics. Drops raw item columns if `drop_cols=True`.
 
