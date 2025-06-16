@@ -7,7 +7,8 @@ nav:
   - CLI Usage: cli.md
   - Compute Score: compute_score.md
   - Compile Answers: compile_answers.md
-  - Compile Questionnaires: compile_questionaires.md
+  - Compile Questionnaires: compile_questionnaires.md
   - Wrangle Data: wrangle_data.md
   - Utils: utils.md
-  - Rand YAML & Structure JSON: rand_yaml_and_structure_json.md
+  - Rand YAML: rand_yaml.md
+  - Structure JSON: structure_json.md

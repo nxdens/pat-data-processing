@@ -6,8 +6,9 @@ Processes compiled participant data, questionnaire responses, and metrics.
 
 ### `__init__(self, data_path, dry_run=False)`
 
-Initializes with paths to compiled data, questionnaire data, and game-level `.npz` data.  
-Raises errors if expected files are not found. Also loads the full list of participant data by calling `load_data()`.
+Initializes with paths to compiled data, questionnaire data, and game-level `.npz` data. 
+
+Raises errors if expected files are not found. Also loads the full list of participant data by calling [`load_data()`](utils.md#load_datacompiled_csv-questionaire_path-pat_data_path).
 
 ---
 
@@ -19,7 +20,7 @@ Runs `wrangle_data()`, `wrangle_diffs()`, `add_acc()`, and `save_all()`
 
 ### `wrangle_data(self)`
 
-Creates a DataFrame that contains coin scores + GMM features, questionnaire answers, and erged subscale scores from `questionaire_scores.csv`, which is stored in `self.PAT_df`.
+Creates a DataFrame that contains coin scores + GMM features, questionnaire answers, and merged subscale scores from `questionaire_scores.csv`, which is stored in `self.PAT_df`.
 
 ---
 

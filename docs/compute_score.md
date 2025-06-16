@@ -1,6 +1,8 @@
 # `PatJsonParser` Class
 
-The `PatJsonParser` class parses the raw game data which comes in the form of JSON files. This data is converted into structured arrays. These arrays contain information at each tick of number of coins collected, number of key presses, etc. along with the broader location of coins. The information is processed, saved, and visualized in order to analyze further.
+The `PatJsonParser` class parses the raw game data which comes in the form of JSON files. This data is converted into structured arrays. These arrays contain information at each tick. A **tick refers to the time at which a new frame appears within the game**. The information that the arrays contain includes the number of coins collected, number of key presses, etc. along with the broader location of coins. The information is processed, saved, and visualized in order to analyze further.
+
+The structure of the JSON file is a triple nested dictionary. The top-level key is a game level (e.g., "level 0", "level 1"). Each level contains multiple rounds, and each round consists of ticks, which are individual time steps. The parser steps through each level, then each round, and finally processes data tick by tick.
 
 ---
 
@@ -8,7 +10,7 @@ The `PatJsonParser` class parses the raw game data which comes in the form of JS
 
 Initializes a new instance of the `PatJsonParser`. `file_path`specifies the path to the JSON file containing the raw data. Set `dry_run` to true for tracing information.
 
-`self.data` contains the Parsed JSON content, `self.this_file`tracks the current JSON file file path being parsed, `self.store_data` is the instance of `PatDataStructure` responsible for managing the current JSON's data, `self.window_length` manages the windowed statistics.
+`self.data` contains the Parsed JSON content, `self.this_file` tracks the current JSON file path being parsed, `self.store_data` is the instance of `PatDataStructure` responsible for managing the current JSON's data, `self.window_length` manages the windowed statistics.
 
 `total_keys_pressed`, `keys_pressed_last_window`, `start_window_tick`, `current_tick`, and `keys_pressed_this_window` are state variables. 
 
@@ -24,7 +26,7 @@ The loop searches for the next level, calls `step_into_round()`, computes metric
 
 ### `step_into_round(self, round_value)`
 
-Processes game data within a round within a level tick by tick. This method tracks coin pickups, stores the actors' locations, counts key presses, and computes metrics per window through method calls.
+Processes game data within a round within a level tick by tick. This method tracks coin pick ups, stores the actors' locations, counts key presses, and computes metrics per window through method calls.
 
 The method appends the computed values to `computed_data`.
 
@@ -38,13 +40,13 @@ Stores each actors' (player and the three AI agents) locations per ticks by extr
 
 ### `update_actor_coins(self, tick_value)`
 
-Calls `add_coin()` to store the coin count for each respective actor.
+Calls `add_coin()` (which updates actor coins upon incrementing) to store the coin count for each respective actor. 
 
 ---
 
 ### `add_coin(self, coin_value, which_user)`
 
-Increments the respective actor's coin count if there has been a change in the number of coins collected, adds the location of the coin collected with the corresponding tick and level, to the coin_ticks variable. It also adds this information to the variable storing which tick the respective actor collects a coin. 
+Increments the respective actor's coin count if there has been a change in the number of coins collected, adds the location of the coin collected with the corresponding tick and level, to the `coin_ticks` variable. It also adds this information to the variable storing which tick the respective actor collects a coin. 
 
 ---
 
