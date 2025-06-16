@@ -139,9 +139,12 @@
 <li>
 <p><code>Race in Context (RiC)</code></p>
 <ul>
+<li>interactions between and within races across<ul>
 <li>leisure</li>
 <li>work</li>
 <li>online environments</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>
@@ -187,17 +190,17 @@
 <tr>
 <td>Social Well-Being Scale (SWBS)</td>
 <td><code>compile_SWBS</code></td>
-<td><code>WB_Integ</code>, <code>WB_Acce</code>, <code>WB_Contri</code>, <code>WB_Actua</code>, <code>WB_Coher</code>, <code>WellBeingSum</code></td>
+<td><code>WB_Integ</code>, <code>WB_Acce</code>, <code>WB_Contri</code>, <br><code>WB_Actua</code>, <code>WB_Coher</code>, <code>WellBeingSum</code></td>
 </tr>
 <tr>
 <td>Race in Context (RiC)</td>
 <td><code>compile_RiC</code></td>
-<td>Frequency and quality across leisure, work, online</td>
+<td>Frequency and quality of interactions <br>between and within races across leisure, <br>work, and online contexts</td>
 </tr>
 <tr>
 <td>Collective Self-Esteem Scale (CSE)</td>
 <td><code>compile_CSE</code></td>
-<td><code>CSEsum</code>, <code>CSEmember</code>, <code>CSEprivate</code>, <code>CSEpublic</code>, <code>CSEidentity</code></td>
+<td><code>CSEsum</code>, <code>CSEmember</code>, <code>CSEprivate</code>, <br><code>CSEpublic</code>, <code>CSEidentity</code></td>
 </tr>
 <tr>
 <td>Satisfaction With Life Scale (SWLS)</td>
@@ -205,9 +208,9 @@
 <td><code>SWLSSum</code></td>
 </tr>
 <tr>
-<td>Multidimensional Scale of Perceived Social Support (MSPSS)</td>
+<td>Multidimensional Scale <br>of Perceived Social <br>Support (MSPSS)</td>
 <td><code>compile_MSPSS</code></td>
-<td><code>MSPSS_total</code>, <code>MSPSS_SigOther</code>, <code>MSPSS_Family</code>, <code>MSPSS_Friend</code></td>
+<td><code>MSPSS_total</code>, <code>MSPSS_SigOther</code>, <br><code>MSPSS_Family</code>, <code>MSPSS_Friend</code></td>
 </tr>
 <tr>
 <td>Chronic Strains Scale</td>
@@ -246,11 +249,11 @@
 <li><code>RiC_AveSameRace_quali</code>: average quality of same-race interactions  </li>
 <li><code>RiC_AveDiffRace_quali</code>: average quality of different-race interactions  </li>
 </ul>
-<p>If <code>subscales=True</code>, also includes frequency and quality metrics for:</p>
+<p>If <code>subscales=True</code>, also includes frequency and quality metric of <strong>interactions between and within races</strong> across</p>
 <ul>
 <li>leisure</li>
 <li>work</li>
-<li>online contexts</li>
+<li>online environments</li>
 </ul>
 <p>Returns a DataFrame with derived <code>RiC</code> metrics. Drops raw item columns if <code>drop_cols=True</code>.</p>
 <hr />
