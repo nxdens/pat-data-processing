@@ -51,8 +51,8 @@ demographic shifts
 coin positive - coin negative avg with speed diffs
 
 
-# How the executable was built
+# Executable instructions
 
-* Ran `pip install pyinstaller`
-* Built the CLI through the custom spec file `pyinstaller pat-cli.spec`
-* If there are any issues with `os.path.join` use class attributes such as `self.data_path` instead of constants 
+* Run `pip install pyinstaller`
+* Build the CLI through the custom spec file `pyinstaller pat-cli.spec`
+* Run the tool through `./dist/pat-cli [arguments] [path/to/data]`
