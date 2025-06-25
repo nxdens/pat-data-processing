@@ -50,3 +50,9 @@ demographic shifts
 
 coin positive - coin negative avg with speed diffs
 
+
+# Executable instructions
+
+* Run `pip install pyinstaller`
+* Build the CLI through the custom spec file `pyinstaller pat-cli.spec`
+* Run the tool through `./dist/pat-cli [arguments] [path/to/data]`
